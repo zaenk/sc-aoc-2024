@@ -1,13 +1,24 @@
+import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/option.{None, Some}
 import gleam/result
 import gleam/string
 import simplifile
 
 pub fn main() {
   io.debug("it works")
-  read_file()
+  // part1()
+  part2()
+}
+
+fn part1() {
+  let assert Ok(contents) = simplifile.read("data/01/part1.txt")
+  let #(left, right) = read(contents, Left, "", [], [])
+  // io.debug(list.length(left))
+  // io.debug(list.length(right))
+  io.debug(total_dist(left, right))
 }
 
 pub fn total_dist(left: List(Int), right: List(Int)) -> Int {
@@ -23,12 +34,49 @@ fn dist(pair: #(Int, Int)) -> Int {
   int.absolute_value(pair.0 - pair.1)
 }
 
-fn read_file() {
+fn part2() {
   let assert Ok(contents) = simplifile.read("data/01/part1.txt")
   let #(left, right) = read(contents, Left, "", [], [])
   // io.debug(list.length(left))
   // io.debug(list.length(right))
-  io.debug(total_dist(left, right))
+  io.debug(similarity(left, right))
+}
+
+pub fn similarity(left: List(Int), right: List(Int)) -> Int {
+  let left_d = count_unique(left, dict.new())
+  let right_d = count_unique(right, dict.new())
+  // io.debug(left_d)
+  // io.debug(right_d)
+  let res =
+    dict.map_values(left_d, fn(l_number, l_count) {
+      let r_count = case dict.get(right_d, l_number) {
+        Ok(v) -> v
+        Error(_) -> 0
+      }
+      l_number * r_count * l_count
+    })
+    |> dict.values
+    |> list.reduce(fn(acc, x) { acc + x })
+  case res {
+    Ok(v) -> v
+    Error(_) -> panic as "could not compute"
+  }
+}
+
+fn count_unique(input: List(Int), counts: Dict(Int, Int)) -> Dict(Int, Int) {
+  case input {
+    [] -> counts
+    [next, ..rest] -> {
+      let inc = fn(x) {
+        case x {
+          Some(val) -> val + 1
+          None -> 1
+        }
+      }
+      let updated = dict.upsert(counts, next, inc)
+      count_unique(rest, updated)
+    }
+  }
 }
 
 type State {
