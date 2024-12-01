@@ -5,20 +5,24 @@ import gleam/list
 import gleam/option.{None, Some}
 import gleam/result
 import gleam/string
-import simplifile
+import internal/files
 
 pub fn main() {
-  io.debug("it works")
-  // part1()
-  part2()
+  io.debug("aoc 2024 day 1")
+  let #(left, right) = parse_assignment()
+  part1(left, right)
+  part2(left, right)
 }
 
-fn part1() {
-  let assert Ok(contents) = simplifile.read("data/01/part1.txt")
-  let #(left, right) = read(contents, Left, "", [], [])
+fn parse_assignment() -> #(List(Int), List(Int)) {
+  let contents = files.read_file("data/01/part1.txt")
+  read(contents, Left, "", [], [])
+}
+
+fn part1(left: List(Int), right: List(Int)) {
   // io.debug(list.length(left))
   // io.debug(list.length(right))
-  io.debug(total_dist(left, right))
+  io.println("part 1: " <> int.to_string(total_dist(left, right)))
 }
 
 pub fn total_dist(left: List(Int), right: List(Int)) -> Int {
@@ -34,12 +38,10 @@ fn dist(pair: #(Int, Int)) -> Int {
   int.absolute_value(pair.0 - pair.1)
 }
 
-fn part2() {
-  let assert Ok(contents) = simplifile.read("data/01/part1.txt")
-  let #(left, right) = read(contents, Left, "", [], [])
+fn part2(left: List(Int), right: List(Int)) {
   // io.debug(list.length(left))
   // io.debug(list.length(right))
-  io.debug(similarity(left, right))
+  io.println("part 2: " <> int.to_string(similarity(left, right)))
 }
 
 pub fn similarity(left: List(Int), right: List(Int)) -> Int {
