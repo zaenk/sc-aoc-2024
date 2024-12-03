@@ -1,13 +1,13 @@
 import gleam/int
 import gleam/io
 import gleam/list
-import gleam/regexp
 import gleam/string
 import internal/files
 
 pub fn main() {
   let input = files.read_file("data/03/part1.txt")
   part1(input)
+  part2(input)
 }
 
 fn part1(input: String) {
@@ -21,17 +21,48 @@ pub fn solve_part1(input) -> Int {
   list.map(terms, fn(t) {
     case t {
       Term(_, a, b) -> a * b
+      _ -> 0
     }
   })
   |> int.sum
 }
 
+fn part2(input: String) {
+  io.println("day 3 part 2")
+  io.println(int.to_string(solve_part2(input)))
+}
+
+pub fn solve_part2(input) -> Int {
+  let terms = parse(input, [])
+  io.debug(terms)
+  let folded =
+    list.reverse(terms)
+    |> list.map_fold(DO, fn(mod, item) {
+      case item {
+        Term(_, a, b) -> {
+          case mod {
+            DO -> #(mod, a * b)
+            DONT -> #(mod, 0)
+            MUL -> panic as "not possible acc"
+          }
+        }
+        Unary(DO) -> #(DO, 0)
+        Unary(DONT) -> #(DONT, 0)
+        Unary(MUL) -> panic as "not possible op"
+      }
+    })
+  int.sum(folded.1)
+}
+
 type Term {
   Term(Operator, Int, Int)
+  Unary(Operator)
 }
 
 type Operator {
   MUL
+  DO
+  DONT
 }
 
 fn parse(input: String, terms: List(Term)) -> List(Term) {
@@ -51,6 +82,23 @@ fn parse(input: String, terms: List(Term)) -> List(Term) {
             Ok(#(op1, op2, rest)) -> parse(rest, [Term(MUL, op1, op2), ..terms])
             Error(_) ->
               parse(string.slice(input, 1, string.length(input)), terms)
+          }
+        }
+        "d" -> {
+          let do = string.starts_with(input, "do()")
+          let dont = string.starts_with(input, "don't()")
+          case do, dont {
+            True, False ->
+              parse(string.slice(input, 4, string.length(input)), [
+                Unary(DO),
+                ..terms
+              ])
+            False, True ->
+              parse(string.slice(input, 7, string.length(input)), [
+                Unary(DONT),
+                ..terms
+              ])
+            _, _ -> parse(string.slice(input, 1, string.length(input)), terms)
           }
         }
         _ -> parse(string.slice(input, 1, string.length(input)), terms)
