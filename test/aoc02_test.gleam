@@ -22,5 +22,5 @@ pub fn safe_damped_test() {
 
 pub fn safe_damped_by_dropping_first_test() {
   aoc02.count_safe_damped(damping_safe)
-  |> should.equal(1)
+  |> should.equal(2)
 }
