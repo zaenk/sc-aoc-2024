@@ -17,7 +17,7 @@ fn part1(input: String) {
 
 pub fn solve_part1(input) -> Int {
   let terms = parse(input, [])
-  io.debug(terms)
+  // io.debug(terms)
   list.map(terms, fn(t) {
     case t {
       Term(_, a, b) -> a * b
@@ -34,7 +34,7 @@ fn part2(input: String) {
 
 pub fn solve_part2(input) -> Int {
   let terms = parse(input, [])
-  io.debug(terms)
+  // io.debug(terms)
   let folded =
     list.reverse(terms)
     |> list.map_fold(DO, fn(mod, item) {
