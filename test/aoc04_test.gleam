@@ -94,3 +94,10 @@ pub fn transpose_test() {
   aoc04.transpose(t_input)
   |> should.equal(t_expected)
 }
+
+pub fn search_test() {
+  aoc04.part1(
+    "MAMXSXAMXMAXMAMXSSMSSSMAAXAMXAMSMMSSMXSAMMSXMAMAAAMAXSAMMXMASAAXMMSSMXXMASMSASXXSAMXSAMMMMXXXMAXXXMXSSXSAMXSMSMAAAMMXXMAXAXSXMASAMMSMMSSMMAS",
+  )
+  |> should.equal(5)
+}

@@ -32,10 +32,10 @@ fn find_horizontal(input: String, search: String) -> Int {
     |> list.filter(strings.not_empty)
     |> list.map(fn(line) { find_in_line(line, search, search, 0) })
     |> int.sum
-  io.println(search)
-  io.println(int.to_string(res))
-  io.println(input)
-  io.println("")
+  // io.println(search)
+  // io.println(int.to_string(res))
+  // io.println(input)
+  // io.println("")
   res
 }
 
