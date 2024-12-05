@@ -1,4 +1,5 @@
 import aoc04
+import gleam/list
 import gleeunit/should
 
 const input = "MMMSXXMASM
@@ -16,6 +17,69 @@ MXMXAXMASX
 pub fn word_search_test() {
   aoc04.part1(input)
   |> should.equal(18)
+}
+
+pub fn word_search_base_test() {
+  aoc04.part1("MMMSXXMASM")
+  |> should.equal(1)
+}
+
+const parts = [
+  "
+XMAS
+....
+....
+....
+",
+  "
+SAMX
+....
+....
+....
+",
+  "
+X...
+M...
+A...
+S...
+",
+  "
+S...
+A...
+M...
+X...
+",
+  "
+X...
+.M..
+..A.
+...S
+",
+  "
+S...
+.A..
+..M.
+...X
+",
+  "
+...X
+..M.
+.A..
+S...
+",
+  "
+...S
+..A.
+.M..
+X...
+",
+]
+
+pub fn word_search_parts_test() {
+  list.each(parts, fn(part) {
+    aoc04.part1(part)
+    |> should.equal(1)
+  })
 }
 
 const t_input = "abc
