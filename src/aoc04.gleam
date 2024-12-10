@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/result
 import gleam/string
 import internal/files
 import internal/strings
@@ -9,7 +10,8 @@ pub fn main() {
   let input = files.read_file("data/04/part1.txt")
   io.println("day 4 part 1")
   io.println(int.to_string(part1(input)))
-  // 2401 your answer is too low
+  io.println("day 4 part 2")
+  io.println(int.to_string(part2(input)))
 }
 
 const word = "XMAS"
@@ -157,4 +159,74 @@ fn find_in_line(
 
 fn drop_first(s: String) -> String {
   string.slice(s, 1, string.length(s))
+}
+
+pub fn part2(content: String) -> Int {
+  let lines = string.split(content, "\n")
+  count_x_mas(lines, 0)
+}
+
+fn count_x_mas(lines: List(String), count: Int) -> Int {
+  case lines {
+    [l1, l2, l3, ..rest] -> {
+      let next_count = count_x_mas_in_lines(l1, l2, l3, count)
+      count_x_mas(list.flatten([[l2], [l3], rest]), next_count)
+    }
+    _ -> {
+      count
+    }
+  }
+}
+
+fn count_x_mas_in_lines(l1: String, l2: String, l3: String, count: Int) -> Int {
+  case string.length(l1) {
+    cnt if cnt < 3 -> count
+    _ -> {
+      case get_diagonals(l1, l2, l3) {
+        Ok(#(d1, d2)) -> {
+          let next_count = case d1, d2 {
+            "MAS", "MAS" -> count + 1
+            "MAS", "SAM" -> count + 1
+            "SAM", "MAS" -> count + 1
+            "SAM", "SAM" -> count + 1
+            _, _ -> count
+          }
+          count_x_mas_in_lines(
+            string.drop_start(l1, 1),
+            string.drop_start(l2, 1),
+            string.drop_start(l3, 1),
+            next_count,
+          )
+        }
+        _ -> {
+          count
+        }
+      }
+    }
+  }
+}
+
+fn get_diagonals(
+  l1: String,
+  l2: String,
+  l3: String,
+) -> Result(#(String, String), Nil) {
+  use #(a1, _, c1) <- result.try(get_first_3(l1))
+  use #(_, b2, _) <- result.try(get_first_3(l2))
+  use #(a3, _, c3) <- result.try(get_first_3(l3))
+  let d1 = string.join([a1, b2, c3], "")
+  let d2 = string.join([a3, b2, c1], "")
+  Ok(#(d1, d2))
+}
+
+fn get_first_3(line: String) -> Result(#(String, String, String), Nil) {
+  case string.length(line) {
+    cnt if cnt >= 3 -> {
+      use a1 <- result.try(string.first(line))
+      use b1 <- result.try(string.first(string.drop_start(line, 1)))
+      use c1 <- result.try(string.first(string.drop_start(line, 2)))
+      Ok(#(a1, b1, c1))
+    }
+    _ -> Error(Nil)
+  }
 }

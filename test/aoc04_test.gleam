@@ -106,3 +106,20 @@ pub fn search2_test() {
   aoc04.part1("XMASXMAS")
   |> should.equal(2)
 }
+
+const x_mas_input = ".M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+..........
+"
+
+pub fn x_mas_test() {
+  aoc04.part2(x_mas_input)
+  |> should.equal(9)
+}
