@@ -1,4 +1,5 @@
 import aoc05
+import gleam/dict
 import gleeunit/should
 
 const input = "47|53
@@ -34,4 +35,45 @@ const input = "47|53
 pub fn day_5_part_1_test() {
   aoc05.part1(input)
   |> should.equal(143)
+}
+
+pub fn day_5_part_2_test() {
+  aoc05.part2(input)
+  |> should.equal(123)
+}
+
+pub fn fix_pages_1_test() {
+  aoc05.fix_pages(
+    [61, 13, 29],
+    dict.from_list([#(29, #([13], [])), #(13, #([], [29]))]),
+  )
+  |> should.equal([61, 29, 13])
+}
+
+// const input_2 = "97|13
+// 97|47
+// 75|29
+// 29|13
+// 97|29
+// 47|13
+// 75|47
+// 97|75
+// 47|29
+// 75|13
+
+// 97,13,75,29,47
+// "
+
+pub fn fix_pages_2_test() {
+  aoc05.fix_pages(
+    [97, 13, 75, 29, 47],
+    dict.from_list([
+      #(13, #([], [97, 29, 47, 75])),
+      #(29, #([13], [75, 97, 47])),
+      #(47, #([13, 29], [97, 75])),
+      #(75, #([29, 47, 13], [97])),
+      #(97, #([13, 47, 29, 75], [])),
+    ]),
+  )
+  |> should.equal([97, 75, 47, 29, 13])
 }
