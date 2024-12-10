@@ -149,7 +149,7 @@ fn find_in_line(
     Error(_) -> {
       case line {
         "" -> count + 1
-        _ -> find_in_line(drop_first(line), orig_search, orig_search, count + 1)
+        _ -> find_in_line(line, orig_search, orig_search, count + 1)
       }
     }
   }

@@ -101,3 +101,8 @@ pub fn search_test() {
   )
   |> should.equal(5)
 }
+
+pub fn search2_test() {
+  aoc04.part1("XMASXMAS")
+  |> should.equal(2)
+}
